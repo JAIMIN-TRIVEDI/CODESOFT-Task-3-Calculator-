@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="jquery-ui-1.13.3/jquery-ui.css">
+    <link rel="stylesheet" href="jquery-ui-1.13.3/jquery-ui.structure.css">
+    <link rel="stylesheet" href="jquery-ui-1.13.3/jquery-ui.theme.css">
+
+    
+    <script src="Jquery.js"></script>
+    <script src="jquery-ui-1.13.3/jquery-ui.js"  type="text/javascript"></script>
+
+
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        button{
+            background-color: #808080;
+            color: #E4E4E5;
+            font-size: 26px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            border-radius: 20px;
+        }
+
+        .calc{
+            background-color: #231F20;
+            height: 630px;
+            width: 450px;
+            border: 10px solid black;
+            margin: 200px;
+            border-radius: 30px;
+        }
+
+        body{
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(100deg, #def124, #fed456);
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div class="calc">
+        <div id="data" style="text-align: right; height: 70px; width: 400px; font-size: 75px; margin-left: 13px; margin-top: 50px;background-color: #BEF4FF;border: 10px solid black; border-radius: 20px;"> 0
+        </div>
+        <div style="height: 50px; margin-top: 50px; margin-left: 40px;">
+        <button class="button" style="height: 70px; width: 70px;">Clear</button>
+        <button class="button" style="height: 70px; width: 70px;">CE</button>
+        <button class="button" style="height: 70px; width: 70px;">Back</button>
+        <button class="button" style="height: 70px; width: 70px;">+/-</button>
+        <button class="button" style="height: 70px; width: 70px;">%</button>
+    </div>
+        <br><br>
+
+        <div style="height: 50px; margin-left: 40px;">
+        <button class="button" style="height: 70px; width: 70px;">7</button>
+        <button class="button" style="height: 70px; width: 70px;">8</button>
+        <button class="button" style="height: 70px; width: 70px;">9</button>
+        <button class="button" style="height: 70px; width: 70px;">/</button>
+        <button class="button" style="height: 70px; width: 70px;">sqrt</button>
+        </div>
+        <br><br>
+
+        <div style="height: 50px; margin-left: 40px;">
+        <button class="button" style="height: 70px; width: 70px;">4</button>
+        <button class="button" style="height: 70px; width: 70px;">5</button>
+        <button class="button" style="height: 70px; width: 70px;">6</button>
+        <button  class="button" style="height: 70px; width: 70px;">*</button>
+        <button class="button" style="height: 70px; width: 70px;">1/x</button>
+    </div>
+        <br><br>
+         
+        <div style="height: 50px; margin-left: 40px;">
+        <button  class="button" style="height: 70px; width: 70px;">1</button>
+        <button  class="button" style="height: 70px; width: 70px;">2</button>
+        <button  class="button" style="height: 70px; width: 70px;">3</button>
+        <button  class="button" style="height: 70px; width: 70px;">-</button>
+        <button class="button" style="height: 70px; width: 70px;">pi</button>
+        </div>
+        <br><br>
+
+
+        <div style="height: 50px; margin-left: 40px;">
+        <button  class="button" style="height: 70px; width: 70px;">0</button>
+        <button  class="button" style="height: 70px; width: 70px;">.</button>
+        <button  class="button" style="height: 70px; width: 70px;">+</button>
+        <button  class="button" style="height: 70px; width: 145px;">=</button>
+        </div>
+        <br><br>
+
+    </div>
+
+    <script>
+        $(document).ready(function()
+    {
+        var result=0;
+        var currentEntry='0';
+        var prevEntry=0;
+        operation=null;
+        updateScreen(result);
+
+        $('.button').on('click',function(evt)
+    {
+        var buttonPressed = $(this).html();
+        console.log(buttonPressed);
+
+        
+    if(buttonPressed === "Clear")
+    {
+        currentEntry = '0';
+        result = 0;
+    }
+
+    else if(buttonPressed === "CE")
+    {   
+        currentEntry='0';
+    }
+
+
+    else if(buttonPressed === "Back")
+    {
+        currentEntry=currentEntry.substring(0,currentEntry.length-1);
+    }
+
+    else if(buttonPressed === "+/-")
+    {
+        currentEntry*=-1;
+    }
+
+    else if(buttonPressed === ".")
+    {
+        currentEntry+='.';
+    }
+
+    else if(isNumber(buttonPressed))
+    {
+        if(currentEntry==='0')
+        {
+            currentEntry=buttonPressed;
+        }
+        else{
+            currentEntry=currentEntry+buttonPressed;
+        }
+    }
+
+    else if(isOperator(buttonPressed))
+    {
+        prevEntry=parseFloat(currentEntry);
+        operation=buttonPressed;
+        currentEntry=' ';
+    }
+
+    else if(buttonPressed === "sqrt")
+    {
+        currentEntry=Math.sqrt(currentEntry);
+    }
+
+    else if(buttonPressed === "1/x")
+    {
+        currentEntry=1/currentEntry;
+    }
+
+    else if(buttonPressed === "pi")
+    {
+        currentEntry=currentEntry*currentEntry*(22/7);
+    }
+
+    else if(buttonPressed === "=")
+    {
+        currentEntry=operate(prevEntry,currentEntry,operation);
+        operation=null;
+    }
+
+    updateScreen(currentEntry);
+
+    });
+    });
+
+    updateScreen = function(displayValue)
+    {
+        var displayValue = displayValue.toString();
+        $('#data').html(displayValue.substring(0,10));
+    };
+
+    isNumber = function(value)
+    {
+        return !isNaN(value);
+    }
+
+    isOperator = function(value)
+    {
+        return value==='/'||value==='*'||value==='-'||value==='+';
+    }
+
+    operate = function(a,b,operation)
+    {
+        a=parseFloat(a);
+        b=parseFloat(b);
+        console.log(a,b,operation);
+
+        if(operation==='+')
+        {
+            return a+b;
+        }
+
+        
+        if(operation==='-')
+        {
+            return a-b;
+        }
+
+        
+        if(operation==='*')
+        {
+            return a*b;
+        }
+
+        
+        if(operation==='/')
+        {
+            return a/b;
+        }
+
+    }
+
+    </script>
+
+</body>
+</html>
